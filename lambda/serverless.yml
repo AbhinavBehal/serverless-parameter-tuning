@@ -1,0 +1,15 @@
+service: ASHA-xgboost-evaluation
+
+frameworkVersion: ">=1.2.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: python3.7 # or python3.7, supported as of November 2018
+
+functions:
+  run:
+    handler: run_xgboost.run
+    events:
+      - http:
+          path: run
+          method: post

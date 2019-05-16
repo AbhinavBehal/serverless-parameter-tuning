@@ -1,0 +1,7 @@
+{
+  "name": "ASHA-xgboost-evaluation",
+  "version": "1.0.0",
+  "description": "Trains and evaluates an XGBoost model for a parallel ASHA implementation",
+  "author": "",
+  "license": "MIT"
+}
