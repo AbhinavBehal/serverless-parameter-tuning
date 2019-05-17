@@ -1,10 +1,19 @@
 service: ASHA-xgboost-evaluation
 
 frameworkVersion: ">=1.2.0 <2.0.0"
-
+plugins:
+  - serverless-python-requirements
 provider:
   name: aws
   runtime: python3.7 # or python3.7, supported as of November 2018
+
+custom:
+  pythonRequirements:
+    pythonBin: python
+    slim: true
+    zip: true
+    dockerizePip: non-linux
+    
 
 functions:
   run:
@@ -13,3 +22,6 @@ functions:
       - http:
           path: run
           method: post
+
+
+

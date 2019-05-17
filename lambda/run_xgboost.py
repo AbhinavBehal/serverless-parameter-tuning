@@ -1,38 +1,48 @@
+import json
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(message)s')
+try:
+  import unzip_requirements
+except ImportError:
+  logger.error("failed unzipping reqs")
+  pass
 import pandas as pd
-from xgboost import XGBClassifier
+import xgboost as xgb
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
 
-import json
-import logging
-
 def run(event, context):
-
+    logger.info("Called run function")
     input_body = json.loads(event['body'])
     if 'params' not in input_body:
-        logging.error("Validation Failed")
+        logger.error("Validation Failed")
         raise Exception("Couldn't create the todo item.")
         return
 
     xgb_params = input_body['params']
-
-    df = pd.read_csv("../preprocessed.csv")
+    logger.info("Reading CSV")
+    df = pd.read_csv("./preprocessed.csv")
 
     X = df.loc[:, df.columns != 'RainTomorrow']
     y = df[['RainTomorrow']]
 
-    model = XGBClassifier(xgb_params)
-    kfold = KFold(n_splits=5, random_state=7)
+    data_dmatrix = xgb.DMatrix(data=X, label=y)
 
-    results = cross_val_score(model, X, y, cv=kfold, verbose=3)
+    logger.info("Performing Cross Validation")
+    # this returns a dataframe of mean error values, each row adds another boosting tree.
+    results = xgb.cv(dtrain=data_dmatrix, params=xgb_params,nfold=3, seed=123, metrics="error")
 
-    mean_score = results.mean()
+    logger.info("Done")
+    # select the iteration with the lowest error (with the optimal number of trees ensembled)
+    best_mean_score = results['test-error-mean'].min()
 
     response = {
         "statusCode": 200,
-        "body": {
-            "evaluation_score":mean_score
-        }
-    }
+        "body": json.dumps({"status": "OK", "evaluation_score": best_mean_score}),
+    };
+
+    logger.info("Sending response", response)
 
     return response

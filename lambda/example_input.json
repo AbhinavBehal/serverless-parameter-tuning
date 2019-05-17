@@ -1,0 +1,11 @@
+{
+  "body": {
+    "params": {
+      "min_child_weight": 10,
+      "gamma": 2,
+      "subsample": 1.0,
+      "colsample_bytree": 0.8,
+      "max_depth": 4
+    }
+  }
+}
