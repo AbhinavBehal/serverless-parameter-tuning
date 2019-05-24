@@ -1,12 +1,11 @@
 import math
 import xgboost as xgb
-from pprint import pprint
 from scipy.stats import uniform, randint
 
 
-def run(data, n_configurations, min_r, max_r, reduction_factor):
+def run(data, n_configs, min_r, max_r, reduction_factor, cv):
     configurations = []
-    for i in range(n_configurations):
+    for i in range(n_configs):
         configurations.append({
             'params': _get_random_config(),
             'error': 0
@@ -15,26 +14,27 @@ def run(data, n_configurations, min_r, max_r, reduction_factor):
     s_max = math.floor(math.log(max_r / min_r, reduction_factor))
     d_matrix = xgb.DMatrix(data=data['X'], label=data['y'])
 
-    assert(n_configurations >= math.pow(reduction_factor, s_max))
+    assert(n_configs >= math.pow(reduction_factor, s_max))
 
     for i in range(s_max + 1):
-        print(i)
-        n = max(1, math.floor(n_configurations * math.pow(reduction_factor, -i)))
+        n = max(1, math.floor(n_configs * math.pow(reduction_factor, -i)))
         r = int(min_r * math.pow(reduction_factor, i))
         for config in configurations:
             config['error'] = xgb.cv(
                 params=config['params'],
                 dtrain=d_matrix,
                 num_boost_round=r,
-                nfold=3,
+                nfold=cv,
                 metrics='error',
-                seed=33
+                verbose_eval=True
             )['test-error-mean'].min()
 
         configurations.sort(key=lambda c: c['error'])
         configurations = configurations[:n]
 
-    pprint(min(configurations, key=lambda c: c['error']))
+    best_config = min(configurations, key=lambda c: c['error'])
+
+    return [1 - best_config['error'], best_config['params']]
 
 
 def _get_random_config():
@@ -46,7 +46,6 @@ def _get_random_config():
         'max_delta_step': randint(0, 12),
         'subsample': uniform(),
         'colsample_bytree': uniform(),
-        # 'tree_method': ['auto']
     }
 
     generated_config = {}

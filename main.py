@@ -1,9 +1,30 @@
-from timeit import timeit
-
-import pandas as pd
-import xgboost as xgb
+import argparse
+import json
+import time
 from pprint import pprint
-from tuning import random_search, grid_search, sha
+
+import numpy as np
+import pandas as pd
+
+from tuning import sha, grid_search, random_search
+
+# reproducible results
+np.random.seed(33)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-a',
+                    '--algorithm',
+                    type=str,
+                    choices=['random', 'grid', 'sha', 'asha'],
+                    required=True,
+                    help='The hyperparameter tuning algorithm to use.')
+parser.add_argument('-p',
+                    '--parameters',
+                    type=json.loads,
+                    required=True,
+                    help='The parameters for the particular algorithm.')
+
+args = parser.parse_args()
 
 target_column = 'RainTomorrow'
 
@@ -13,16 +34,28 @@ data = {
     'y': df[[target_column]].values.ravel()
 }
 
-estimator = xgb.XGBClassifier(n_jobs=-1, random_state=33)
+results = []
+t1 = time.perf_counter()
 
-# score, params = grid_search.run(data=data, estimator=estimator)
+if args.algorithm == 'random':
+    results = random_search.run(
+        data,
+        **args.parameters)
+elif args.algorithm == 'grid':
+    results = grid_search.run(data)
+elif args.algorithm == 'sha':
+    results = sha.run(
+        data,
+        **args.parameters)
+elif args.algorithm == 'asha':
+    # TODO
+    pass
 
-elapsed = timeit(stmt='sha.run(data=data, n_configurations=16, min_r=1, max_r=20, reduction_factor=2)',
-                 number=1,
-                 globals=globals())
+elapsed = time.perf_counter() - t1
 
-print(f'{elapsed} seconds')
+score, params = results
 
-# print(f'Best Score: {score}')
-# print('Best Params:')
-# pprint(params)
+print(f'Took: {elapsed} seconds')
+print(f'Best score: {score}')
+print(f'Best params: ')
+pprint(params)

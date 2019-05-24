@@ -1,7 +1,8 @@
+import xgboost as xgb
 from sklearn.model_selection import GridSearchCV
 
 
-def run(data, estimator):
+def run(data):
     param_grid = {
         'eta': [0.3, 0.9],
         'gamma': [0, 2],
@@ -14,7 +15,7 @@ def run(data, estimator):
     }
 
     search = GridSearchCV(
-        estimator=estimator,
+        estimator=xgb.XGBClassifier(n_jobs=-1),
         param_grid=param_grid,
         scoring='roc_auc',
         n_jobs=-1,

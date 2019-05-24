@@ -1,8 +1,9 @@
+import xgboost as xgb
 from scipy.stats import uniform, randint
 from sklearn.model_selection import RandomizedSearchCV
 
 
-def run(data, estimator, n_iter=5, random_state=33):
+def run(data, n_iter=5, random_state=33):
     param_distributions = {
         'eta': uniform(),
         'gamma': randint(0, 10),
@@ -15,7 +16,7 @@ def run(data, estimator, n_iter=5, random_state=33):
     }
 
     search = RandomizedSearchCV(
-        estimator=estimator,
+        estimator=xgb.XGBClassifier(n_jobs=-1),
         param_distributions=param_distributions,
         scoring='roc_auc',
         n_iter=n_iter,
