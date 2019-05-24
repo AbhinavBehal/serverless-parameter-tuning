@@ -48,7 +48,7 @@ y = df[['RainTomorrow']].values.ravel()
 # fit and evaluate using k_fold
 
 model = XGBClassifier(n_jobs=-1)
-kfold = KFold(n_splits=5, random_state=33)
+kfold = KFold(n_splits=3, random_state=33)
 print("Cross eval starting")
 
 results = cross_val_score(model, X, y, cv=kfold, verbose=2, n_jobs=-1)
