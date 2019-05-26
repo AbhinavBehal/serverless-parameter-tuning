@@ -1,7 +1,5 @@
 import json
 import logging
-import pandas as pd
-import xgboost as xgb
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -12,6 +10,9 @@ try:
 except ImportError:
     logger.error("failed unzipping reqs")
     pass
+
+import pandas as pd
+import xgboost as xgb
 
 
 def run(event, context):
