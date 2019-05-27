@@ -23,6 +23,7 @@ def run(event, context):
     nfold = input_body['cv']
     seed = input_body['seed']
     num_boost_round = input_body['num_boost_round']
+    early_stopping_rounds = input_body['early_stopping_rounds']
 
     logger.info('Reading CSV')
     df = pd.read_csv('./preprocessed.csv')
@@ -40,6 +41,7 @@ def run(event, context):
         nfold=nfold,
         seed=seed,
         num_boost_round=num_boost_round,
+        early_stopping_rounds=early_stopping_rounds,
         metrics='error')
 
     logger.info("Done")
