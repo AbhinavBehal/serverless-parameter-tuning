@@ -8,3 +8,7 @@ scipy==1.2.1
 six==1.12.0
 sklearn==0.0
 xgboost==0.82
+requests-futures
+aws-requests-auth
+boto3
+botocore

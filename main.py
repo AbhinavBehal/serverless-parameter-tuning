@@ -6,7 +6,7 @@ from pprint import pprint
 import numpy as np
 import pandas as pd
 
-from tuning import sha, grid_search, random_search
+from tuning import asha, sha, grid_search, random_search
 
 # reproducible results
 np.random.seed(33)
@@ -41,15 +41,19 @@ if args.algorithm == 'random':
     results = random_search.run(
         data,
         **args.parameters)
+
 elif args.algorithm == 'grid':
-    results = grid_search.run(data)
+    results = grid_search.run(
+        data,
+        **args.parameters)
+
 elif args.algorithm == 'sha':
     results = sha.run(
         data,
         **args.parameters)
+
 elif args.algorithm == 'asha':
-    # TODO
-    pass
+    results = asha.run(**args.parameters)
 
 elapsed = time.perf_counter() - t1
 

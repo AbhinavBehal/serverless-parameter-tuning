@@ -1,25 +1,17 @@
 import xgboost as xgb
 from sklearn.model_selection import GridSearchCV
 
+from tuning import util
 
-def run(data):
-    param_grid = {
-        'eta': [0.3, 0.9],
-        'gamma': [0, 2],
-        'max_depth': [6],
-        'min_child_weight': [0, 2],
-        'max_delta_step': [0, 2],
-        'subsample': [0.5, 1.0],
-        'colsample_bytree': [0.0, 0.5, 1.0],
-        'tree_method': ['auto']
-    }
 
+def run(data, cv):
     search = GridSearchCV(
         estimator=xgb.XGBClassifier(n_jobs=-1),
-        param_grid=param_grid,
+        param_grid=util.param_grid,
         scoring='roc_auc',
         n_jobs=-1,
         verbose=2,
+        cv=cv
     )
 
     search.fit(data['X'], data['y'])
