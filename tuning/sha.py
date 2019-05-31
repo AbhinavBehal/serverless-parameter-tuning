@@ -1,5 +1,9 @@
+from concurrent.futures import ProcessPoolExecutor
+
 import math
-import xgboost as xgb
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import cross_val_score
+from xgboost import XGBClassifier
 
 from tuning import util
 
@@ -9,31 +13,36 @@ def run(data, n_configs, min_r, max_r, reduction_factor, cv):
     for i in range(n_configs):
         configurations.append({
             'params': util.get_random_params(),
-            'error': 0
+            'score': 0
         })
 
-    s_max = math.floor(math.log(max_r / min_r, reduction_factor))
-    d_matrix = xgb.DMatrix(data=data['X'], label=data['y'])
+    s_max = int(math.ceil(math.log(max_r / min_r, reduction_factor))) + 1
 
-    assert (n_configs >= math.pow(reduction_factor, s_max))
+    with ProcessPoolExecutor(max_workers=None) as executor:
+        for i in range(s_max):
+            n = max(1, math.floor(n_configs * math.pow(reduction_factor, -i)))
+            r = int(min_r * math.pow(reduction_factor, i))
 
-    for i in range(s_max + 1):
-        n = max(1, math.floor(n_configs * math.pow(reduction_factor, -i)))
-        r = int(min_r * math.pow(reduction_factor, i))
+            configurations.sort(key=lambda c: c['score'], reverse=True)
+            configurations = configurations[:n]
 
-        for config in configurations:
-            config['error'] = xgb.cv(
-                params=config['params'],
-                dtrain=d_matrix,
-                num_boost_round=r,
-                nfold=cv,
-                metrics='error',
-                verbose_eval=True
-            )['test-error-mean'].min()
+            futures = []
+            for config in configurations:
+                futures.append({
+                    'future': executor.submit(
+                        cross_val_score,
+                        XGBClassifier(**config['params'], n_estimators=r),
+                        data['X'],
+                        data['y'],
+                        cv=StratifiedKFold(n_splits=cv, shuffle=True),
+                    ),
+                    'config': config
+                })
 
-        configurations.sort(key=lambda c: c['error'])
-        configurations = configurations[:n]
+            for f in futures:
+                f['config']['score'] = f['future'].result().mean()
+                print(f'Rung {i} - score: {f["config"]["score"]}')
 
-    best_config = min(configurations, key=lambda c: c['error'])
+    best_config = max(configurations, key=lambda c: c['score'])
 
-    return [1 - best_config['error'], best_config['params']]
+    return [best_config['score'], best_config['params']]
