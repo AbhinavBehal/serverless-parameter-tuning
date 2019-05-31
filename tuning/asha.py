@@ -20,8 +20,9 @@ class PriorityEntry(object):
 
 
 def run(n_workers, min_r, max_r, reduction_factor, early_stopping_rounds, cv):
-    # 5 minute timeout for the lambda
-    boto_config = Config(read_timeout=60 * 5)
+    # 10 minute timeout for the lambda
+    time_out = 10 * 60
+    boto_config = Config(read_timeout=time_out)
     client = boto3.client('lambda', config=boto_config)
 
     rungs = []

@@ -20,7 +20,6 @@ param_grid = {
     'max_delta_step': [0, 2],
     'subsample': [0.5, 1.0],
     'colsample_bytree': [0.0, 0.5, 1.0],
-    'tree_method': ['auto']
 }
 
 
