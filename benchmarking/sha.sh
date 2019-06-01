@@ -9,6 +9,8 @@ mkdir -p "${current_folder}/results" && touch ${results_file}
 echo "Configs,Min_R,Max_R,Reduction_Factor,Time,Score" > ${results_file}
 
 for i in 2 4 8 16 32 64 128 256 512 1024; do
+    echo ${i}
+
     min_r=1
     max_r=${i}
     reduction_factor=2
