@@ -24,12 +24,13 @@
 #### Parameters
 ```
 {
+    "max_samples": max. number of samples in each hyperparameter list (increases total combinations),
     "cv": number of folds for cross-validation
 }
 ```
 
 #### Example
-`python main.py -a grid -p '{"cv": 3}'`
+`python main.py -a grid -p '{"max_samples": 4, "cv": 3}'`
 
 ---
 
