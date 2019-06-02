@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 
 current_folder="${BASH_SOURCE%/*}"
-results_file="${current_folder}/results/asha.csv"
+results_file="${current_folder}/results/asha_max_r.csv"
 temp_file="${current_folder}/.temp"
 
 mkdir -p "${current_folder}/results" && touch ${results_file}
 
 echo "Workers,Min_R,Max_R,Reduction_Factor,Early_Stopping_Rounds,Time,Score,Configs_Evaluated" > ${results_file}
 
-for i in 2 4 8 16 32 64 128 256 512 1024; do
+for i in 2 4 8 16 32 64 128 256; do
     echo ${i}
-    workers=50
+    workers=100
     min_r=1
     max_r=${i}
-    early_stopping_rounds=${i}
+    early_stopping_rounds=${max_r}
     reduction_factor=2
 
     params="{\"n_workers\": ${workers}, \"min_r\": ${min_r}, \"max_r\": ${max_r},\
