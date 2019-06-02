@@ -1,5 +1,4 @@
-import random
-
+import numpy as np
 from scipy.stats import randint, uniform
 
 param_distributions = {
@@ -28,7 +27,7 @@ def get_random_params():
 
     for param, dist in param_distributions.items():
         if isinstance(dist, list):
-            generated_config[param] = random.choice(dist)
+            generated_config[param] = np.random.choice(dist)
         else:
             generated_config[param] = dist.rvs()
 
