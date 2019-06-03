@@ -1,4 +1,23 @@
-# 751 Project - Parallel Machine Learning
+# SOFTENG 751 - Parallel Machine Learning (Group 5)
+
+## Description
+
+This project attempts to assess the performance of several hyperparameter tuning algorithms:
+- Grid Search
+- Random Search
+- Successive Halving Algorithm (SHA)
+- Asynchronous Successive Halving Algorithm (ASHA)
+
+Grid and random search have been implemented using the [scikit-learn](https://scikit-learn.org/stable/) machine learning 
+package. While SHA and ASHA have been implemented from scratch, using [this](https://arxiv.org/abs/1810.05934) research paper.
+All implementations run in parallel by default, with grid search, random search and SHA using process-based parallelism
+and ASHA using asynchronous function calls to an AWS lambda.
+
+The dataset used can be found [here](https://www.kaggle.com/jsphyg/weather-dataset-rattle-package).
+
+Results obtained from the scripts in the `benchmarking/` folder can be found in `results.xlsx`. 
+This spreadsheet compares the performance of all four tuning algorithms, and also contains 
+data specific to ASHA and the effects of its various input parameters.
 
 ## Setup
 - Install Python 3
@@ -9,6 +28,8 @@
     your own AWS Lambda. The code for this lambda function can be found in
     `lambda/run_xgboost.py`. You will also need to place your AWS credentials in `~/.aws/credentials`,
     and set a default region in `~/.aws/config`.
+    - Additionally, you will need to include a copy of your training data in the `lambda/` folder
+    when uploading to AWS.
     - Refer to [here](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html)
     for more details about the credential and configuration files.
 

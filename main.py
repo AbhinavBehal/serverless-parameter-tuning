@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     target_column = 'RainTomorrow'
 
-    df = pd.read_csv('./preprocessed.csv')
+    df = pd.read_csv('data/preprocessed.csv')
     data = {
         'X': df.loc[:, df.columns != target_column],
         'y': df[[target_column]].values.ravel()
