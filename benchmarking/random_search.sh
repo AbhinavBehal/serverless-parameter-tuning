@@ -9,7 +9,7 @@ mkdir -p "${current_folder}/results" && touch ${results_file}
 echo "Iterations,Time,Score" > ${results_file}
 
 for i in 1 2 4 8 16 32 64 128 256; do
-    python "${current_folder}/../main.py" -a random -p "{\"n_iter\": ${i}, \"cv\": 3}" > ${temp_file}
+    python "${current_folder}/../main.py" -a random -p "{\"n_workers\": -1, \"n_iter\": ${i}, \"cv\": 3}" > ${temp_file}
     score=`grep -oP "(?<=Best score: ).+" ${temp_file}`
     time=`grep -oP "(?<=Took: )[\\d\\.]+" ${temp_file}`
     echo "${i},${time},${score}" >> ${results_file}

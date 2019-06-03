@@ -10,7 +10,7 @@ echo "Max_Samples,Time,Score,Configs_Evaluated" > ${results_file}
 
 for i in 1 2 3 4 5; do
     echo ${i}
-    python -u "${current_folder}/../main.py" -a grid -p "{\"max_samples\": ${i}, \"cv\": 3}" | tee ${temp_file}
+    python -u "${current_folder}/../main.py" -a grid -p "{\"n_workers\": -1, \"max_samples\": ${i}, \"cv\": 3}" | tee ${temp_file}
 
     score=`grep -oP "(?<=Best score: ).+" ${temp_file}`
     time=`grep -oP "(?<=Took: )[\\d\\.]+" ${temp_file}`

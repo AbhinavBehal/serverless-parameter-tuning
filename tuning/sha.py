@@ -8,7 +8,7 @@ from xgboost import XGBClassifier
 from tuning import util
 
 
-def run(data, n_configs, min_r, max_r, reduction_factor, cv):
+def run(data, n_workers, n_configs, min_r, max_r, reduction_factor, cv):
     configurations = []
     for i in range(n_configs):
         configurations.append({
@@ -18,7 +18,9 @@ def run(data, n_configs, min_r, max_r, reduction_factor, cv):
 
     s_max = int(math.ceil(math.log(max_r / min_r, reduction_factor))) + 1
 
-    with ProcessPoolExecutor(max_workers=None) as executor:
+    n_workers = None if n_workers <= 0 else n_workers
+
+    with ProcessPoolExecutor(max_workers=n_workers) as executor:
         for i in range(s_max):
             n = max(1, math.floor(n_configs * math.pow(reduction_factor, -i)))
             r = int(min_r * math.pow(reduction_factor, i))

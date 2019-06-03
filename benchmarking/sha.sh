@@ -14,7 +14,7 @@ for i in 2 4 8 16 32 64 128 256 512 1024; do
     min_r=1
     max_r=${i}
     reduction_factor=2
-    params="{\"n_configs\": ${i}, \"min_r\": ${min_r}, \"max_r\": ${max_r},\
+    params="{\"n_workers\": -1, \"n_configs\": ${i}, \"min_r\": ${min_r}, \"max_r\": ${max_r},\
      \"reduction_factor\": ${reduction_factor}, \"cv\": 3}"
 
     python "${current_folder}/../main.py" -a sha -p "${params}" > ${temp_file}

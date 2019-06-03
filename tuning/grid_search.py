@@ -5,12 +5,12 @@ from sklearn.model_selection import GridSearchCV
 from tuning import util
 
 
-def run(data, max_samples, cv):
+def run(data, n_workers, max_samples, cv):
     search = GridSearchCV(
         estimator=xgb.XGBClassifier(n_jobs=-1, n_estimators=10),
         param_grid=_generate_grid(max_samples),
         scoring='roc_auc',
-        n_jobs=-1,
+        n_jobs=n_workers,
         verbose=1,
         cv=cv
     )

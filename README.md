@@ -45,13 +45,14 @@ data specific to ASHA and the effects of its various input parameters.
 #### Parameters
 ```
 {
+    "n_workers": number of configurations to evaluate in parallel (-1 => use all available cores),
     "max_samples": max. number of samples in each hyperparameter list (increases total combinations),
     "cv": number of folds for cross-validation
 }
 ```
 
 #### Example
-`python main.py -a grid -p '{"max_samples": 4, "cv": 3}'`
+`python main.py -a grid -p '{"n_workers": -1, "max_samples": 4, "cv": 3}'`
 
 ---
 
@@ -60,12 +61,13 @@ data specific to ASHA and the effects of its various input parameters.
 #### Parameters
 ```
 {
+    "n_workers": number of configurations to evaluate in parallel (-1 => use all available cores),
     "n_iter": number of random configurations (iterations) to evaluate,
     "cv": number of folds for cross-validation
 }
 ```
 #### Example
-`python main.py -a random -p '{"n_iter": 10, "cv": 3}'`
+`python main.py -a random -p '{"n_workers": -1, "n_iter": 10, "cv": 3}'`
 
 ---
 
@@ -74,6 +76,7 @@ data specific to ASHA and the effects of its various input parameters.
 #### Parameters
 ```
 {
+    "n_workers": number of configurations to evaluate in parallel (-1 => use all available cores),
     "n_configs": number of configurations to evaluate,
     "min_r": minimum resources (boosting rounds) given to each configuration,
     "max_r": maximum resources (boosting rounds) given to each configuration,
@@ -82,7 +85,7 @@ data specific to ASHA and the effects of its various input parameters.
 }
 ```
 #### Example
-`python main.py -a sha -p '{"n_configs": 32, "min_r": 1, "max_r": 32, "reduction_factor": 2, "cv": 3}'`
+`python main.py -a sha -p '{"n_workers": -1, "n_configs": 32, "min_r": 1, "max_r": 32, "reduction_factor": 2, "cv": 3}'`
 
 ---
 
