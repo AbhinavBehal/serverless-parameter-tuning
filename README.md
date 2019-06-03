@@ -1,4 +1,4 @@
-# SOFTENG 751 - Parallel Machine Learning (Group 5)
+# SOFTENG 751 - Parallel Machine Learning (Group 9)
 
 ## Description
 
